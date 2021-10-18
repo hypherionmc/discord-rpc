@@ -51,6 +51,12 @@ static void updateDiscordPresence()
         discordPresence.matchSecret = "xyzzy";
         discordPresence.joinSecret = "join";
         discordPresence.spectateSecret = "look";
+
+        discordPresence.button_label_1 = "Twitter";
+        discordPresence.button_url_1 = "https://twitter.com/";
+
+        //discordPresence.button_label_2 = "Google";
+        //discordPresence.button_url_2 = "https://google.com/";
         discordPresence.instance = 0;
         Discord_UpdatePresence(&discordPresence);
     }

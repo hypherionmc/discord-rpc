@@ -133,51 +133,55 @@ size_t JsonWriteRichPresenceObj(char* dest,
                     WriteOptionalString(writer, "small_text", presence->smallImageText);
                 }
 
-                if ((presence->partyId && presence->partyId[0]) || presence->partySize ||
-                    presence->partyMax || presence->partyPrivacy) {
-                    WriteObject party(writer, "party");
-                    WriteOptionalString(writer, "id", presence->partyId);
-                    if (presence->partySize && presence->partyMax) {
-                        WriteArray size(writer, "size");
-                        writer.Int(presence->partySize);
-                        writer.Int(presence->partyMax);
+                if ((presence->button_url_1 && presence->button_url_1[0])
+                      && (presence->button_label_1 && presence->button_label_1[0])
+                      || (presence->button_url_2 && presence->button_url_2[0])
+                      && (presence->button_label_2 && presence->button_label_2[0])) {
+                    WriteArray buttons(writer, "buttons");
+
+                    if ((presence->button_url_1 && presence->button_url_1[0]) && (presence->button_label_1 && presence->button_label_1[0])) {
+                        writer.StartObject();
+                        WriteOptionalString(writer, "label", presence->button_label_1);
+                        WriteOptionalString(writer, "url", presence->button_url_1);
+                        writer.EndObject();
                     }
 
-                    if (presence->partyPrivacy) {
-                        WriteKey(writer, "privacy");
-                        writer.Int(presence->partyPrivacy);
+                    if ((presence->button_url_2 && presence->button_url_2[0]) && (presence->button_label_2 && presence->button_label_2[0])) {
+                        writer.StartObject();
+                        WriteOptionalString(writer, "label", presence->button_label_2);
+                        WriteOptionalString(writer, "url", presence->button_url_2);
+                        writer.EndObject();
                     }
-                }
 
-                if ((presence->matchSecret && presence->matchSecret[0]) ||
-                    (presence->joinSecret && presence->joinSecret[0]) ||
-                    (presence->spectateSecret && presence->spectateSecret[0])) {
-                    WriteObject secrets(writer, "secrets");
-                    WriteOptionalString(writer, "match", presence->matchSecret);
-                    WriteOptionalString(writer, "join", presence->joinSecret);
-                    WriteOptionalString(writer, "spectate", presence->spectateSecret);
                 } else {
-                    if (presence->button_url[0] && presence->button_label[0] || presence->button_url[1] && presence->button_label[1]) {
-                        WriteArray buttons(writer, "buttons");
-
-                        if (presence->button_url[0] && presence->button_label[0]) {
-                            writer.StartObject();
-                            WriteOptionalString(writer, "label", presence->button_label[0]);
-                            WriteOptionalString(writer, "url", presence->button_url[0]);
-                            writer.EndObject();
+                    if ((presence->partyId && presence->partyId[0]) || presence->partySize ||
+                        presence->partyMax || presence->partyPrivacy) {
+                        WriteObject party(writer, "party");
+                        WriteOptionalString(writer, "id", presence->partyId);
+                        if (presence->partySize && presence->partyMax) {
+                            WriteArray size(writer, "size");
+                            writer.Int(presence->partySize);
+                            writer.Int(presence->partyMax);
                         }
 
-                        if (presence->button_url[1] && presence->button_label[1]) {
-                            writer.StartObject();
-                            WriteOptionalString(writer, "label", presence->button_label[1]);
-                            WriteOptionalString(writer, "url", presence->button_url[1]);
-                            writer.EndObject();
+                        if (presence->partyPrivacy) {
+                            WriteKey(writer, "privacy");
+                            writer.Int(presence->partyPrivacy);
                         }
                     }
-                }
 
-                writer.Key("instance");
-                writer.Bool(presence->instance != 0);
+                    if ((presence->matchSecret && presence->matchSecret[0]) ||
+                        (presence->joinSecret && presence->joinSecret[0]) ||
+                        (presence->spectateSecret && presence->spectateSecret[0])) {
+                        WriteObject secrets(writer, "secrets");
+                        WriteOptionalString(writer, "match", presence->matchSecret);
+                        WriteOptionalString(writer, "join", presence->joinSecret);
+                        WriteOptionalString(writer, "spectate", presence->spectateSecret);
+                    }
+
+                    writer.Key("instance");
+                    writer.Bool(presence->instance != 0);
+                }
             }
         }
     }
